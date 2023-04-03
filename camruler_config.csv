@@ -1,0 +1,22 @@
+#-------------------------------
+# default settings
+#-------------------------------
+
+# camera values
+camera_id = 0
+camera_width = 1920
+camera_height = 1080
+camera_frame_rate = 30
+#camera_fourcc = cv2.VideoWriter_fourcc(*"YUYV")
+camera_fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+
+# auto measure mouse events
+auto_percent = 0.2 
+auto_threshold = 127
+auto_blur = 5
+
+# normalization mouse events
+norm_alpha = 0
+norm_beta = 254
+
+
