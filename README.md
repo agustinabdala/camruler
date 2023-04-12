@@ -4,7 +4,7 @@ cam ruler with openCV to measure metal plate cutouts.
 Source idea/initial code: https://www.youtube.com/watch?v=1CVmjTcSpIw
 
 
-#OpenCV utilizado: 
+#OpenCV package proposed to use in this project: 
 -   pip install opencv-contrib-python
 
 #para listar cams en linux 
@@ -12,7 +12,7 @@ Source idea/initial code: https://www.youtube.com/watch?v=1CVmjTcSpIw
 
 #use gopro with openCV
 -   https://youtu.be/Wi6aMYFSwcA
--   pip instll goprocam
+-   pip install goprocam
 -   https://pypi.org/project/goprocam/
 -   https://github.com/KonradIT/gopro-py-api/blob/master/docs/docs.md
 
