@@ -1,15 +1,18 @@
 import cv2
 import numpy as np
 import utils
+import math
 
-cap = cv2.VideoCapture(0)  # set video capture device``
+cap = cv2.VideoCapture(2)  # set video capture device``
 cap.set(10, 160)  # set brightness
 cap.set(3, 1280)  # set height and width for 720p camera
 cap.set(4, 720)
 
-scaleFactor = 2
-widthPaper = 216 * scaleFactor
-heightPaper = 279 * scaleFactor
+scaleFactor = 1
+widthPaper = 210 * scaleFactor
+heightPaper = 297 * scaleFactor
+
+calibrated = False
 
 
 while True:
@@ -44,10 +47,14 @@ while True:
             cv2.arrowedLine(imgContours2, (nPoints[0][0][0], nPoints[0][0][1]), (nPoints[2][0][0], nPoints[2][0][1]),
                             (255, 0, 255), 2, 8, 0, 0.05)
             x, y, w, h = obj[3]
-            cv2.putText(imgContours2, '{}cm'.format(nW), (x + 30, y - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1,
+            cv2.putText(imgContours2, '{}mm'.format(nW), (x + 30, y - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1,
                         (255, 0, 255), 1)
-            cv2.putText(imgContours2, '{}cm'.format(nH), (x - 70, y + h // 2), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1,
+            cv2.putText(imgContours2, '{}mm'.format(nH), (x - 70, y + h // 2), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1,
                         (255, 0, 255), 1)
 
+            
+            if (calibrated == False):
+                scaleFactor, calibrated = utils.calibrate(scaleFactor, nW, nH, widthPaper, heightPaper, tol=0.01)
+
     cv2.imshow('cont2', imgContours2)
-    cv2.waitKey(400)  # 400 ms delay, avoid kernel crash
+    cv2.waitKey(200)  # 400 ms delay, avoid kernel crash

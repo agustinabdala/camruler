@@ -2,6 +2,10 @@
 cam ruler with openCV to measure metal plate cutouts.
 
 Source idea/initial code: https://www.youtube.com/watch?v=1CVmjTcSpIw
+Another source: https://github.com/alexyev/ObjectSizeEstimation
+                https://www.youtube.com/watch?v=2oTUd2cN37k&t=25s   ==> demo video
+                https://medium.com/@alexanderyevchenko/building-a-virtual-ruler-82694d821d61  ==> Explanation
+
 
 
 #OpenCV package proposed to use in this project: 
@@ -25,4 +29,3 @@ Source idea/initial code: https://www.youtube.com/watch?v=1CVmjTcSpIw
 -   TEXT DETECTION https://pyimagesearch.com/2018/09/17/opencv-ocr-and-text-recognition-with-tesseract/
 -   TEXT DETECTION https://www.geeksforgeeks.org/text-detection-and-extraction-using-opencv-and-ocr/
 
-COMPILAR

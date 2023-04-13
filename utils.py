@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import math
 
 
 def getContours(img, cThr=[100, 100], showCanny=False, minArea=1000, filter=0, draw=False):
@@ -10,7 +11,7 @@ def getContours(img, cThr=[100, 100], showCanny=False, minArea=1000, filter=0, d
     imgDial = cv2.dilate(imgCanny, kernel, iterations=3)
     imgThreshold = cv2.erode(imgDial, kernel, iterations=2)
     if showCanny:
-        resized = cv2.resize(imgThreshold, (0, 0), None, 0.6,0.6)
+        resized = cv2.resize(imgThreshold, (0, 0), None, 0.6, 0.6)
         cv2.imshow('Canny', resized)
 
     contours, hierarchy = cv2.findContours(
@@ -67,3 +68,32 @@ def warpImage(img, points, w, h, pad=20):
 
 def findDistance(pts1, pts2):
     return ((pts2[0] - pts1[0])**2 + (pts2[1] - pts1[1])**2)**0.5
+
+
+def calibrate(scale_factor, nW, nH, widthPaper, heightPaper, tol=None, calibration_status_update=False, scale_tolerance = 0.01):
+    r_orig = widthPaper / heightPaper
+    r_calib = nW / nH
+    new_scale_factor = scale_factor
+    tol = 0.01 if tol == None else tol
+    
+    try:
+        if (math.isclose(r_calib, r_orig, rel_tol=tol) and
+            nH != 0 and heightPaper != 0 and calibration_status_update == False):
+            
+            new_scale_h = nH / heightPaper
+            new_scale_w = nW / widthPaper
+            
+            if (math.isclose(new_scale_h, new_scale_w, rel_tol=scale_tolerance)):
+                new_scale_factor = new_scale_h
+                calibration_status_update = True
+
+            print(nW, nH, f"scalefactor: {new_scale_factor} calib_status {calibration_status_update}")
+
+        else:
+            calibration_status_update = False
+
+
+    except ZeroDivisionError:
+        print('Cannot devide by zero.')
+
+    return new_scale_factor, calibration_status_update
