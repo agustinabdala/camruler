@@ -6,6 +6,7 @@ Another source: https://github.com/alexyev/ObjectSizeEstimation
                 https://www.youtube.com/watch?v=2oTUd2cN37k&t=25s   ==> demo video
                 https://medium.com/@alexanderyevchenko/building-a-virtual-ruler-82694d821d61  ==> Explanation
 
+COLOR COUNT: https://github.com/codegiovanni/Counting_by_color
 
 
 #OpenCV package proposed to use in this project: 
@@ -22,10 +23,14 @@ Another source: https://github.com/alexyev/ObjectSizeEstimation
 
 #Mas info
 -   https://pyimagesearch.com/2016/03/28/measuring-size-of-objects-in-an-image-with-opencv/
--   CALIBRATION https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html
--   CALIBRATION https://learnopencv.com/camera-calibration-using-opencv/
--   CALIBRATION https://github.com/EminentCodfish/GoPro-Calibration-Distortion-Removal
 -   TEXT DETECTION https://pyimagesearch.com/2018/08/20/opencv-text-detection-east-text-detector/
 -   TEXT DETECTION https://pyimagesearch.com/2018/09/17/opencv-ocr-and-text-recognition-with-tesseract/
 -   TEXT DETECTION https://www.geeksforgeeks.org/text-detection-and-extraction-using-opencv-and-ocr/
 
+
+
+#PROCEDIMIENTO
+- leer codigo
+- traer espesor db
+- tomar foto
+- 

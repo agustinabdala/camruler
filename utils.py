@@ -95,5 +95,5 @@ def calibrate(scale_factor, nW, nH, widthPaper, heightPaper, tol=None, calibrati
 
     except ZeroDivisionError:
         print('Cannot devide by zero.')
-
+    print(f'WIDTH: {nW} HEIGHT: {nH}')
     return new_scale_factor, calibration_status_update

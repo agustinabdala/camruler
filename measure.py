@@ -17,11 +17,11 @@ calibrated = False
 
 while True:
     success, img = cap.read()  # grabs, decodes and returns next video frame
-    resized = cv2.resize(img, (0, 0), None, 0.5, 0.5)
-    cv2.imshow('Original', resized)
+    # resized = cv2.resize(img, (0, 0), None, 0.5, 0.5)
+    # cv2.imshow('Original', resized)
 
     imgContours, conts = utils.getContours(
-        img, showCanny=True, minArea=50000, filter=4)
+        img, showCanny=True, minArea=400, filter=4)
 
     # if len(conts) != 0:
     #     # pre-sorted so that first is largest, and find it's approx points
@@ -52,9 +52,8 @@ while True:
             cv2.putText(imgContours2, '{}mm'.format(nH), (x - 70, y + h // 2), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1,
                         (255, 0, 255), 1)
 
-            
             if (calibrated == False):
                 scaleFactor, calibrated = utils.calibrate(scaleFactor, nW, nH, widthPaper, heightPaper, tol=0.01)
-
+    
     cv2.imshow('cont2', imgContours2)
-    cv2.waitKey(200)  # 400 ms delay, avoid kernel crash
+    cv2.waitKey(10)  # 400 ms delay, avoid kernel crash
