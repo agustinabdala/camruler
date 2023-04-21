@@ -3,15 +3,21 @@ from object_detector import *
 import numpy as np
 
 # Load Aruco detector
-parameters = cv2.aruco.DetectorParameters_create()
-aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_5X5_50)
+
+aruco_dict =cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_50)
+parameters =  cv2.aruco.DetectorParameters()
+# detector = cv2.aruco.ArucoDetector(dictionary, parameters)
+
+
+# parameters = cv2.aruco.DetectorParameters_create()
+# aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_5X5_50)
 
 
 # Load Object Detector
 detector = HomogeneousBgDetector()
 
 # Load Cap
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(2)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -30,7 +36,7 @@ while True:
         aruco_perimeter = cv2.arcLength(corners[0], True)
 
         # Pixel to cm ratio
-        pixel_cm_ratio = aruco_perimeter / 20
+        pixel_cm_ratio = aruco_perimeter / (62.5*4)
 
         contours = detector.detect_objects(img)
 

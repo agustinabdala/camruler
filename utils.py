@@ -7,11 +7,11 @@ def getContours(img, cThr=[100, 100], showCanny=False, minArea=1000, filter=0, d
     imgGrey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # convert into greyscale
     imgBlur = cv2.GaussianBlur(imgGrey, (5, 5), 1)
     imgCanny = cv2.Canny(imgBlur, cThr[0], cThr[1])
-    kernel = np.ones((5, 5))
+    kernel = np.ones((2, 2))
     imgDial = cv2.dilate(imgCanny, kernel, iterations=3)
     imgThreshold = cv2.erode(imgDial, kernel, iterations=2)
     if showCanny:
-        resized = cv2.resize(imgThreshold, (0, 0), None, 0.6, 0.6)
+        resized = cv2.resize(imgThreshold, (0, 0), None, 0.8, 0.8)
         cv2.imshow('Canny', resized)
 
     contours, hierarchy = cv2.findContours(
@@ -53,47 +53,6 @@ def reorder(points):
     return newPoints
 
 
-# gets a bird's-eye perspective of the image
-def warpImage(img, points, w, h, pad=20):
-
-    points = reorder(points)
-    pts1 = np.float32(points)
-    pts2 = np.float32([[0, 0], [w, 0], [0, h], [w, h]])
-    matrix = cv2.getPerspectiveTransform(pts1, pts2)
-    imgWarp = cv2.warpPerspective(img, matrix, (w, h))
-    imgWarp = imgWarp[pad:imgWarp.shape[0]-pad, pad:imgWarp.shape[1]-pad]
-
-    return imgWarp
-
 
 def findDistance(pts1, pts2):
     return ((pts2[0] - pts1[0])**2 + (pts2[1] - pts1[1])**2)**0.5
-
-
-def calibrate(scale_factor, nW, nH, widthPaper, heightPaper, tol=None, calibration_status_update=False, scale_tolerance = 0.01):
-    r_orig = widthPaper / heightPaper
-    r_calib = nW / nH
-    new_scale_factor = scale_factor
-    tol = 0.01 if tol == None else tol
-    
-    try:
-        if (math.isclose(r_calib, r_orig, rel_tol=tol) and
-            nH != 0 and heightPaper != 0 and calibration_status_update == False):
-            
-            new_scale_h = nH / heightPaper
-            new_scale_w = nW / widthPaper
-            
-            if (math.isclose(new_scale_h, new_scale_w, rel_tol=scale_tolerance)):
-                new_scale_factor = new_scale_h
-                calibration_status_update = True
-
-            print(nW, nH, f"scalefactor: {new_scale_factor} calib_status {calibration_status_update}")
-
-        else:
-            calibration_status_update = False
-
-
-    except ZeroDivisionError:
-        print('Cannot devide by zero.')
-    print(f'WIDTH: {nW} HEIGHT: {nH}')
-    return new_scale_factor, calibration_status_update

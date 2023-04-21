@@ -3,18 +3,22 @@ from object_detector import *
 import numpy as np
 
 # Load Aruco detector
-parameters = cv2.aruco.DetectorParameters_create()
-aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_5X5_50)
 
 
 # Load Object Detector
 detector = HomogeneousBgDetector()
+# Load Aruco detector
+aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_50)
+parameters = cv2.aruco.DetectorParameters()
+
 
 # Load Image
-img = cv2.imread("phone_aruco_marker.jpg")
+img = cv2.imread("jc.jpg")
 
-# Get Aruco marker
-corners, _, _ = cv2.aruco.detectMarkers(img, aruco_dict, parameters=parameters)
+
+ # Get Aruco marker
+corners, _, _ = cv2.aruco.detectMarkers(
+    img, aruco_dict, parameters=parameters)
 
 # Draw polygon around the marker
 int_corners = np.int0(corners)
