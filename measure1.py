@@ -7,10 +7,7 @@ cap = cv2.VideoCapture(2)  # set video capture device``
 #cap.set(10, 10)  # set brightness
 cap.set(3, 1280)  # set height and width for 720p camera
 cap.set(4, 720)
-
-scaleFactor = 1
-widthPaper = 210 * scaleFactor
-heightPaper = 297 * scaleFactor
+pixel_cm_ratio = 1
 
 # Load Aruco detector
 aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_50)
@@ -33,22 +30,20 @@ while True:
         aruco_perimeter = cv2.arcLength(corners[0], True)
 
         # Pixel to cm ratio
-        scaleFactor = aruco_perimeter / (63*4)
+        pixel_cm_ratio = aruco_perimeter / (63*4)
 
-    imgContours, conts = utils.getContours(
-        img, showCanny=True, minArea=40, filter=4)
 
     imgContours2, conts2 = utils.getContours(
-        img, minArea=40, filter=4, cThr=[50, 50], draw=False)
+        img, minArea=10, filter=4, cThr=[100, 100], draw=True, showCanny=True)
 
     if conts2:
         for obj in conts2:
             cv2.polylines(imgContours2, [obj[2]], True, (0, 255, 0), 2)
             nPoints = utils.reorder(obj[2])
             nW = round(utils.findDistance(
-                nPoints[0][0]//scaleFactor, nPoints[1][0]//scaleFactor), 2)
+                nPoints[0][0]//pixel_cm_ratio, nPoints[1][0]//pixel_cm_ratio), 2)
             nH = round(utils.findDistance(
-                nPoints[0][0]//scaleFactor, nPoints[2][0]//scaleFactor), 2)
+                nPoints[0][0]//pixel_cm_ratio, nPoints[2][0]//pixel_cm_ratio), 2)
             # display measurements on image
             cv2.arrowedLine(imgContours2, (nPoints[0][0][0], nPoints[0][0][1]), (nPoints[1][0][0], nPoints[1][0][1]),
                             (255, 0, 255), 2, 8, 0, 0.05)
