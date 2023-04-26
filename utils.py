@@ -10,12 +10,15 @@ def getContours(img, cThr=[100, 100], showCanny=False, minArea=1000, filter=0, d
     kernel = np.ones((2, 2))
     imgDial = cv2.dilate(imgCanny, kernel, iterations=3)
     imgThreshold = cv2.erode(imgDial, kernel, iterations=2)
+
     if showCanny:
-        resized = cv2.resize(imgThreshold, (0, 0), None, 0.8, 0.8)
+        resized = cv2.resize(imgThreshold, (0, 0), None, 0.5, 0.5)
+        cv2.namedWindow('Canny', cv2.WINDOW_NORMAL) 
+
         cv2.imshow('Canny', resized)
 
     contours, hierarchy = cv2.findContours(
-        imgThreshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        imgThreshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     finalContours = []
 
