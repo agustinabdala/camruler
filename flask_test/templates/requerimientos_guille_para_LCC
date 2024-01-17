@@ -1,0 +1,7 @@
+para cada requerimiento, hace falta una pantalla que tenga : MCO, MC1, MC2 si es aplicacble o no con un checkbox 
+un boton de aplicable -- en que el que si se pone NO, hay que justificar en un cuadro de dialogo. Y un boton guardar que no te deje guardar si no tenes justificaciones y esta en NO. Las justificaciones pueden ser un dropdown, y un campo de observaciones texto libres.
+
+Standard Specificaition 
+
+LCC: Listas de Control de Cumplimiento
+
