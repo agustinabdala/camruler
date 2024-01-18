@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+   <body>
+      <h3> Usted va a generar {{number_pieces}} nuevas piezas </h3>
+      <h3> los ID's de las mismas seran: </h3>
+      
+        {% for i in range(0, number_pieces)%}
+          <li>{{list_ID[i]}}</li>
+        {% endfor %}
+
+      <h5> Cuando este listo para proceder ingrese nuevamente el nro de piezas (confirmacion) a cortar y ENTER.</h5>
+      <form method="POST", action="\print_sticker">
+         nro de piezas: <input  name=num_pieces type=text></input><br>
+         <button type="submit">Enter</button>
+      </form>
+   </body>
+</html>

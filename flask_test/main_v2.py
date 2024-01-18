@@ -7,6 +7,7 @@ import sys
 import psycopg2
 import time
 import uuid
+import pprint
 
 # Initialize the flask application
 app = Flask(__name__)
@@ -17,6 +18,8 @@ DB = "your_database"
 USER_DB = "your_username"
 PASSWORD_USER = "your_password"
 TABLE_NAME = "table_name"
+
+global codigo, fim_padre, list_new_ids, num
 
 def take_save_image():
 
@@ -258,9 +261,61 @@ def measuring_method1():
 
 
     return f"saving into DB - largo = {largo_max} | ancho = {ancho_max}" #, f"<img src='data:image/png;base64,{data}'/>"
-  
-  
-  
+
+@app.route("/print_sticker", methods=["GET", "POST"])
+def print_stickers():
+    list_ids = list(session['new_piece_IDs'].values())
+    for id in list_ids:
+        send_to_print(id) # terminar esta funcion
+    return render_template("corte_pieza.html") # hacer que este template sea repetitivo para cada pieza
+
+@app.route("/ask_number_of_pieces", methods=["GET", "POST"])
+def ask_number_of_pieces():
+
+    num = request.form["num_pieces"]
+    codigo = session['ID_father']
+    #global num
+    #global list_new_ids
+    list_new_ids = dict()
+    for k in range(int(num)):
+        new_id = uuid.uuid4().hex
+        print(new_id)
+        list_new_ids[k] = new_id
+    
+    session['new_piece_IDs'] = list_new_ids
+    print(list_new_ids)
+    print("SESSION: ", session)
+    print("codigo: ", codigo)
+    return render_template("lista_piezas_a_cortar.html", number_pieces = int(num), list_ID=list_new_ids)
+        
+    
+
+    
+@app.route("/readcode", methods=["GET", "POST"])
+def readcode():
+    #codigo = input("ESCANEE EL CODIGO DE BARRAS: ")
+    # En este caso es el que el usuario coloca en el cuadro como ID
+    #fim_padre = retrieve_fim_padre(codigo)
+    fim_padre = "345678AB"
+    
+    #if fim_padre != '090909':
+    #    return redirect(url_for("ask_number_of_pieces"))
+    #flash("TIRAR MENSAJE DE ERROR")
+    
+    print("EL ID es: ", request.form["ID"])
+    session['ID_father'] = request.form["ID"]
+    
+    return render_template("num_of_pieces.html", mother_fim = fim_padre) #redirect(url_for("ask_number_of_pieces"))
+    
+    
+#@app.route('/found/<email>/<listOfObjects>')
+#def found(email, listOfObjects):
+#  return render_template("found.html",
+#      keys=email, obj=listOfObjects)
+           
+# It will load the form template which 
+# is in login.html
+
 # loggnig to the form with method POST or GET
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -274,44 +329,8 @@ def login():
     # if the method is GET or username is not admin,
     # then it redirects to index method.
     return redirect(url_for('index'))
-    
-@app.route("/ask_number_of_pieces", methods=["GET", "POST"])
-def ask_number_of_pieces():
-    num = request.form["num_pieces"]
-    #global num
-    list_new_ids = []
-    for k in range(int(num)):
-        new_id = uuid.uuid4()
-        print(new_id)
-        list_new_ids.append(new_id)
-    print(list_new_ids)
-    print("SESSION: ", session)
-    return "hasta aca ya llegamos"
-        
-    
 
-    
-@app.route("/readcode", methods=["GET", "POST"])
-def readcode():
-    #codigo = input("ESCANEE EL CODIGO DE BARRAS: ")
-    #fim_padre = retrieve_fim_padre(codigo)
-    #global codigo, fim_padre
-    #if fim_padre != '090909':
-    #    return redirect(url_for("ask_number_of_pieces"))
-    #flash("TIRAR MENSAJE DE ERROR")
-    print("EL ID es: ", request.form["ID"])
-    session['ID'] = request.form["ID"]
-    
-    return render_template("num_of_pieces.html") #redirect(url_for("ask_number_of_pieces"))
-    
-    
-#@app.route('/found/<email>/<listOfObjects>')
-#def found(email, listOfObjects):
-#  return render_template("found.html",
-#      keys=email, obj=listOfObjects)
-           
-# It will load the form template which 
-# is in login.html
+
 @app.route('/')
 def index():
     return render_template("login.html")
@@ -321,8 +340,8 @@ if __name__ == '__main__':
     app.run(debug=True)
     
     
-# 0) LOGIN
-# 1) escanear ID de pieza a cortar --> ID PADRE, y traer FIM de DB
+# 0) LOGIN  ---
+# 1) escanear ID de pieza a cortar --> ID PADRE, y traer FIM de DB  
 # 2) Preguntar cuantos rezagos se generaran
 # 3) Registrar cuantos rezagos se generaran
 # 4) Generar nuevos ID tantos como numero de nuevos rezagos
