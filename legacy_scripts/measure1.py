@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import utils
 
-cap = cv2.VideoCapture(2)  # set video capture device``
+cap = cv2.VideoCapture(0)  # set video capture device``
 #cap.set(10, 10)  # set brightness
 cap.set(3, 1280)  # set height and width for 720p camera
 cap.set(4, 720)
@@ -14,9 +14,10 @@ parameters = cv2.aruco.DetectorParameters()
 
  
 while True:
-    # success, img = cap.read()  # grabs, decodes and returns next video frame
-    img = cv2.imread("media/IMG_1525.JPG")
-    img = cv2.resize(img, (0, 0), None, 0.5, 0.5)
+    success, img = cap.read()  # grabs, decodes and returns next video frame
+    # img = cv2.imread("media/IMG_1525.JPG")
+    # img = cv2.resize(img, (0, 0), None, 0.5, 0.5)
+    
     # Get Aruco marker
     corners, _, _ = cv2.aruco.detectMarkers(
         img, aruco_dict, parameters=parameters)
@@ -31,6 +32,7 @@ while True:
 
         # Pixel to cm ratio
         pixel_cm_ratio = aruco_perimeter / (187*4)
+        print(f'pixel_cm_ratio = {pixel_cm_ratio}')
 
 
     imgContours2, conts2 = utils.getContours(
