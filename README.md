@@ -65,4 +65,3 @@ COLOR COUNT: https://github.com/codegiovanni/Counting_by_color
 - leer codigo
 - traer espesor db
 - tomar foto
-- 
