@@ -2,10 +2,17 @@ import json
 import cv2
 import numpy as np
 import utils
+import pickle
 
-#Call camera URL for stream
+# Call camera URL for stream
 camera_url = "rtsp://medicion:medicion2024@172.21.117.30:554/cam/realmonitor?channel=1&subtype=0"
 
+# Load camera calibration data from pickle files
+with open("cameraMatrix.pkl", "rb") as f:
+    cameraMatrix = pickle.load(f)
+
+with open("dist.pkl", "rb") as f:
+    dist = pickle.load(f)
 
 # Function to save the current slider values to a JSON file
 def save_presets(filename='presets.json'):
@@ -40,11 +47,8 @@ def load_presets(filename='presets.json'):
     except FileNotFoundError:
         print(f"Preset file {filename} not found. Using default values.")
 
-# def initialize_capture(device=0, width=1280, height=720):
 def initialize_capture():
     cap = cv2.VideoCapture(camera_url)
-    # cap.set(3, width)
-    # cap.set(4, height)
     return cap
 
 def load_aruco_detector():
@@ -91,10 +95,8 @@ def process_frame(img, aruco_dict, parameters, pixel_cm_ratio, cThr1, cThr2, bri
             nW = round(utils.findDistance(nPoints[0] / pixel_cm_ratio, nPoints[1] / pixel_cm_ratio), 2)
             nH = round(utils.findDistance(nPoints[0] / pixel_cm_ratio, nPoints[2] / pixel_cm_ratio), 2)
 
-            cv2.arrowedLine(imgContours2, (nPoints[0][0], nPoints[0][1]), (nPoints[1][0], nPoints[1][1]),
-                            (0, 0, 255), 2, 8, 0, 0.05)
-            cv2.arrowedLine(imgContours2, (nPoints[0][0], nPoints[0][1]), (nPoints[2][0], nPoints[2][1]),
-                            (0, 0, 255), 2, 8, 0, 0.05)
+            cv2.arrowedLine(imgContours2, (nPoints[0][0], nPoints[0][1]), (nPoints[1][0], nPoints[1][1]), (0, 0, 255), 2, 8, 0, 0.05)
+            cv2.arrowedLine(imgContours2, (nPoints[0][0], nPoints[0][1]), (nPoints[2][0], nPoints[2][1]), (0, 0, 255), 2, 8, 0, 0.05)
             x, y, w, h = obj[3]
             cv2.putText(imgContours2, f'{nW}mm', (x + 30, y - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1)
             cv2.putText(imgContours2, f'{nH}mm', (x - 70, y + h // 2), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1)
@@ -127,6 +129,15 @@ def main():
         if not success:
             print("Failed to capture image")
             break
+
+        # Undistort the captured frame
+        h, w = img.shape[:2]
+        newCameraMatrix, roi = cv2.getOptimalNewCameraMatrix(cameraMatrix, dist, (w, h), 1, (w, h))
+        img = cv2.undistort(img, cameraMatrix, dist, None, newCameraMatrix)
+
+        # Crop the image
+        x, y, w, h = roi
+        img = img[y:y+h, x:x+w]
 
         cThr1 = cv2.getTrackbarPos('Canny Threshold 1', 'Trackbars')
         cThr2 = cv2.getTrackbarPos('Canny Threshold 2', 'Trackbars')

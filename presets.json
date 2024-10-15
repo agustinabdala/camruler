@@ -1,1 +1,1 @@
-{"Canny Threshold 1": 140, "Canny Threshold 2": 197, "Brightness": 255, "Contrast": 127, "Blur Kernel Size": 5, "Morph Kernel Size": 2, "Dilate Iterations": 3, "Erode Iterations": 2}
+{"Canny Threshold 1": 140, "Canny Threshold 2": 197, "Brightness": 255, "Contrast": 200, "Blur Kernel Size": 5, "Morph Kernel Size": 2, "Dilate Iterations": 3, "Erode Iterations": 2}

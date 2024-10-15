@@ -3,7 +3,10 @@ import numpy as np
 import utils
 import math
 
-cap = cv2.VideoCapture(2)  # set video capture device``
+camera_url = "rtsp://medicion:medicion2024@172.21.117.30:554/cam/realmonitor?channel=1&subtype=0"
+
+
+cap = cv2.VideoCapture(camera_url)  # set video capture device``
 cap.set(10, 160)  # set brightness
 cap.set(3, 1280)  # set height and width for 720p camera
 cap.set(4, 720)

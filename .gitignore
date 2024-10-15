@@ -2,3 +2,5 @@
 __pycache__
 media/
 aruco/50_5x5_1000-10.svg.pdf
+CameraCalibration/images/
+CameraCalibration/images - backup/
