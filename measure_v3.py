@@ -68,6 +68,10 @@ def adjust_brightness_contrast(img, brightness=255, contrast=127):
     return cv2.addWeighted(img, alpha, img, 0, gamma)
 
 def process_frame(img, aruco_dict, parameters, pixel_cm_ratio, cThr1, cThr2, brightness, contrast, blur_kernel_size, kernel_size, dilate_iter, erode_iter):
+    # Increase the font scale for larger text
+    font_scale = 5  # Adjust this value as needed
+    thickness = 2     # Adjust thickness if necessary
+
     img = adjust_brightness_contrast(img, brightness, contrast)
     corners, _, _ = cv2.aruco.detectMarkers(img, aruco_dict, parameters=parameters)
     
@@ -79,7 +83,7 @@ def process_frame(img, aruco_dict, parameters, pixel_cm_ratio, cThr1, cThr2, bri
         print(f'pixel_cm_ratio = {pixel_cm_ratio}')
 
     imgContours2, conts2 = utils.getContours(
-        img, cThr=[cThr1, cThr2], minArea=400, filter=4, showCanny=True, 
+        img, cThr=[cThr1, cThr2], minArea=1000, filter=4, showCanny=True, 
         blur_kernel_size=blur_kernel_size, kernel_size=kernel_size, 
         dilate_iter=dilate_iter, erode_iter=erode_iter, draw=False)
 
@@ -98,8 +102,8 @@ def process_frame(img, aruco_dict, parameters, pixel_cm_ratio, cThr1, cThr2, bri
             cv2.arrowedLine(imgContours2, (nPoints[0][0], nPoints[0][1]), (nPoints[1][0], nPoints[1][1]), (0, 0, 255), 2, 8, 0, 0.05)
             cv2.arrowedLine(imgContours2, (nPoints[0][0], nPoints[0][1]), (nPoints[2][0], nPoints[2][1]), (0, 0, 255), 2, 8, 0, 0.05)
             x, y, w, h = obj[3]
-            cv2.putText(imgContours2, f'{nW}mm', (x + 30, y - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1)
-            cv2.putText(imgContours2, f'{nH}mm', (x - 70, y + h // 2), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1)
+            cv2.putText(imgContours2, f'{nW}mm', (x + 30, y - 10), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), thickness)
+            cv2.putText(imgContours2, f'{nH}mm', (x - 70, y + h // 2), cv2.FONT_HERSHEY_SIMPLEX, font_scale , (0, 0, 255), thickness)
     
     return imgContours2
 
@@ -111,7 +115,7 @@ def create_trackbar_window():
     cv2.createTrackbar('Canny Threshold 1', 'Trackbars', 140, 255, on_trackbar_change)
     cv2.createTrackbar('Canny Threshold 2', 'Trackbars', 197, 255, on_trackbar_change)
     cv2.createTrackbar('Brightness', 'Trackbars', 255, 510, on_trackbar_change)
-    cv2.createTrackbar('Contrast', 'Trackbars', 127, 254, on_trackbar_change)
+    cv2.createTrackbar('Contrast', 'Trackbars', 127, 3800, on_trackbar_change)
     cv2.createTrackbar('Blur Kernel Size', 'Trackbars', 5, 50, on_trackbar_change)
     cv2.createTrackbar('Morph Kernel Size', 'Trackbars', 2, 10, on_trackbar_change)
     cv2.createTrackbar('Dilate Iterations', 'Trackbars', 3, 10, on_trackbar_change)

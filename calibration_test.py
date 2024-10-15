@@ -11,7 +11,7 @@ with open("dist.pkl", "rb") as f:
     dist = pickle.load(f)
 
 # Read the image to be undistorted
-img = cv.imread('img47.png')
+img = cv.imread('img62.png')
 h, w = img.shape[:2]
 
 # Get the optimal new camera matrix and region of interest
