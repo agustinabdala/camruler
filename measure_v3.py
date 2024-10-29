@@ -70,15 +70,15 @@ def adjust_brightness_contrast(img, brightness=255, contrast=127):
 def process_frame(img, aruco_dict, parameters, pixel_cm_ratio, cThr1, cThr2, brightness, contrast, blur_kernel_size, kernel_size, dilate_iter, erode_iter):
     # Increase the font scale for larger text
     font_scale = 5  # Adjust this value as needed
-    thickness = 2     # Adjust thickness if necessary
+    thickness = 4     # Adjust thickness if necessary
 
     img = adjust_brightness_contrast(img, brightness, contrast)
-    corners, _, _ = cv2.aruco.detectMarkers(img, aruco_dict, parameters=parameters)
+    corners, ids, _ = cv2.aruco.detectMarkers(img, aruco_dict, parameters=parameters)
     
     if corners:
-        int_corners = np.int0(corners)
-        cv2.polylines(img, int_corners, True, (0, 255, 0), 1)
-        aruco_perimeter = cv2.arcLength(corners[0], True)
+        int_corners = np.array(corners[0], dtype=np.int32)  # Ensure you convert the first marker's corners to int32
+        cv2.polylines(img, int_corners.reshape((-1, 1, 2)), True, (0, 255, 0), 1)  # Reshape for polylines
+        aruco_perimeter = cv2.arcLength(corners[0][0], True)  # Use the first marker's corners for perimeter
         pixel_cm_ratio = aruco_perimeter / (187 * 4)
         print(f'pixel_cm_ratio = {pixel_cm_ratio}')
 
@@ -106,6 +106,7 @@ def process_frame(img, aruco_dict, parameters, pixel_cm_ratio, cThr1, cThr2, bri
             cv2.putText(imgContours2, f'{nH}mm', (x - 70, y + h // 2), cv2.FONT_HERSHEY_SIMPLEX, font_scale , (0, 0, 255), thickness)
     
     return imgContours2
+
 
 def on_trackbar_change(val):
     pass
