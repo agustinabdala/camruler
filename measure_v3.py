@@ -30,6 +30,19 @@ def save_presets(filename='presets.json'):
         json.dump(presets, f)
     print(f"Presets saved to {filename}")
 
+
+def draw_rounded_rectangle(img, top_left, bottom_right, color, radius, thickness=-1):
+    # Draw the rectangle sides
+    cv2.rectangle(img, (top_left[0] + radius, top_left[1]), (bottom_right[0] - radius, bottom_right[1]), color, thickness)
+    cv2.rectangle(img, (top_left[0], top_left[1] + radius), (bottom_right[0], bottom_right[1] - radius), color, thickness)
+
+    # Draw the four corners
+    cv2.circle(img, (top_left[0] + radius, top_left[1] + radius), radius, color, thickness)
+    cv2.circle(img, (bottom_right[0] - radius, top_left[1] + radius), radius, color, thickness)
+    cv2.circle(img, (top_left[0] + radius, bottom_right[1] - radius), radius, color, thickness)
+    cv2.circle(img, (bottom_right[0] - radius, bottom_right[1] - radius), radius, color, thickness)
+
+
 # Function to load slider values from a JSON file and set the sliders
 def load_presets(filename='presets.json'):
     try:
@@ -69,7 +82,7 @@ def adjust_brightness_contrast(img, brightness=255, contrast=127):
 
 def process_frame(img, aruco_dict, parameters, pixel_cm_ratio, cThr1, cThr2, brightness, contrast, blur_kernel_size, kernel_size, dilate_iter, erode_iter):
     # Increase the font scale for larger text
-    font_scale = 5  # Adjust this value as needed
+    font_scale = 4  # Adjust this value as needed
     thickness = 4     # Adjust thickness if necessary
 
     img = adjust_brightness_contrast(img, brightness, contrast)
@@ -102,8 +115,33 @@ def process_frame(img, aruco_dict, parameters, pixel_cm_ratio, cThr1, cThr2, bri
             cv2.arrowedLine(imgContours2, (nPoints[0][0], nPoints[0][1]), (nPoints[1][0], nPoints[1][1]), (0, 0, 255), 2, 8, 0, 0.05)
             cv2.arrowedLine(imgContours2, (nPoints[0][0], nPoints[0][1]), (nPoints[2][0], nPoints[2][1]), (0, 0, 255), 2, 8, 0, 0.05)
             x, y, w, h = obj[3]
-            cv2.putText(imgContours2, f'{nW}mm', (x + 30, y - 10), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), thickness)
-            cv2.putText(imgContours2, f'{nH}mm', (x - 70, y + h // 2), cv2.FONT_HERSHEY_SIMPLEX, font_scale , (0, 0, 255), thickness)
+            
+            # Set text for width and height
+            width_text = f'{nW}mm'
+            height_text = f'{nH}mm'
+
+            # Calculate text sizes
+            (wW, hW), _ = cv2.getTextSize(width_text, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
+            (wH, hH), _ = cv2.getTextSize(height_text, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
+
+            # Define rounded rectangle coordinates
+            height_extension = 40
+
+            rounded_rect_top_left_w = (x + 20, y - hW - 10)
+            rounded_rect_bottom_right_w = (x + 20 + wW, y - 10 + height_extension)
+
+            rounded_rect_top_left_h = (x - 70, y + h // 2 - hH // 2)
+            rounded_rect_bottom_right_h = (x - 70 + wH, y + h // 2 + hH // 2 + height_extension)
+
+
+
+            # Draw rounded background rectangles
+            draw_rounded_rectangle(imgContours2, rounded_rect_top_left_w, rounded_rect_bottom_right_w, (0, 0, 255), radius=30)
+            draw_rounded_rectangle(imgContours2, rounded_rect_top_left_h, rounded_rect_bottom_right_h, (0, 0, 255), radius=30)
+
+            # Draw text
+            cv2.putText(imgContours2, width_text, (x + 20, y - 10), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), thickness)
+            cv2.putText(imgContours2, height_text, (x - 70, y + h // 2 + hH // 2), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), thickness)
     
     return imgContours2
 
@@ -125,7 +163,7 @@ def create_trackbar_window():
 def main():
     cap = initialize_capture()
     aruco_dict, parameters = load_aruco_detector()
-    pixel_cm_ratio = 1
+    pixel_cm_ratio = 1.97
     create_trackbar_window()
     load_presets()  # Load presets at the start
 
